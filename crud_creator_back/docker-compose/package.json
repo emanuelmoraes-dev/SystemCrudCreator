@@ -1,0 +1,6 @@
+{
+	"scripts": {
+		"start": "docker-compose --project-directory .. -f start.yml up",
+		"dev": "docker-compose --project-directory .. -f dev.yml up"
+	}
+}

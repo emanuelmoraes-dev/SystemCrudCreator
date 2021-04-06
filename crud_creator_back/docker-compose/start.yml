@@ -1,0 +1,18 @@
+version: "3"
+services:
+
+  mongodb:
+    image: mongo:4-bionic
+    ports:
+      - 29017:27017
+    volumes:
+      - ../mongodata:/data/db
+  
+  ccb_start:
+    build: .
+    command: npm run start
+    restart: on-failure
+    ports:
+      - 4000:3000
+    depends_on:
+      - mongodb
