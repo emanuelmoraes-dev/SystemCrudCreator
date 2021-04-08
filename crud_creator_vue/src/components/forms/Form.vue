@@ -1,16 +1,19 @@
 <template>
 	<div>
+		<slot name="before-title"></slot>
 		<slot name="title">
-			<h1 class="title">Criar Entidade</h1>
+			<h1 class="title">{{ title }}</h1>
 		</slot>
+		<slot name="after-title"></slot>
 		<form>
 			<slot name="fields">
 				<div v-for="[fieldName, field] of fields" :key="fieldName">
-					<slot :name="`field_${fieldName}`">
+					<slot :name="`field-${fieldName}`" :fieldName="fieldName" :field="field">
 						<InputForm
+							@change="change"
 							v-if="field.type === 'input'"
-							:entity="entity"
-							:fieldName="fieldName"
+							v-show="!(field.show === false)"
+							v-model="entity[fieldName]"
 							:label="typeof (field.label) === 'string' ? field.label : fieldName"
 							:controlClasses="field.controlClasses || 'control'"
 							:inputClasses="field.inputClasses || 'input'"
@@ -19,9 +22,10 @@
 						/>
 
 						<SelectForm
+							@change="change"
 							v-if="field.type === 'select'"
-							:entity="entity"
-							:fieldName="fieldName"
+							v-show="!(field.show === false)"
+							v-model="entity[fieldName]"
 							:label="typeof (field.label) === 'string' ? field.label : fieldName"
 							:controlClasses="field.controlClasses || 'control'"
 							:selectClasses="field.selectClasses || 'select'"
@@ -30,6 +34,8 @@
 					</slot>
 				</div>
 			</slot>
+
+			<slot name="before-actions"></slot>
 
 			<slot name="actions">
 				<div class="buttons">
@@ -46,6 +52,8 @@
 					</slot>
 				</div>
 			</slot>
+
+			<slot name="after-actions"></slot>
 		</form>
 	</div>
 </template>
@@ -60,6 +68,10 @@ export default {
 	components: { InputForm, SelectForm },
 
 	props: {
+		title: {
+			type: String,
+			default: ''
+		},
 		entity: {
 			type: Object,
 			default: () => ({})
@@ -77,6 +89,10 @@ export default {
 
 		cancel () {
 			this.$emit('cancel', this.entity)
+		},
+
+		change () {
+			this.$emit('change', this.entity)
 		}
 	},
 

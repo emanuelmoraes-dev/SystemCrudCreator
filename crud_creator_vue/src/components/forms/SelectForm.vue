@@ -3,7 +3,8 @@
 		<div class="field">
 			<label class="label">{{ label }}</label>
 			<div :class="controlClasses">
-				<select v-model="entity[fieldName]">
+				{{ dvalue }}
+				<select v-model="dvalue">
 					<option v-for="opt of source" :key="opt">
 						{{ opt }}
 					</option>
@@ -14,18 +15,18 @@
 </template>
 
 <script>
+import declareValue from '@/mixins/declare-value.js'
+
 export default {
 	name: 'SelectForm',
 
+	mixins: [
+		declareValue({
+			required: true
+		})
+	],
+
 	props: {
-		entity: {
-			type: Object,
-			required: true
-		},
-		fieldName: {
-			type: String,
-			required: true
-		},
 		label: {
 			type: String,
 			required: true
